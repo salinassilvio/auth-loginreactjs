@@ -1,8 +1,9 @@
-
+import SigninPage from "./components/SigninPage";
 function App() {
   return (
     <div className="App">
-      <h1>Hola Mundo</h1>        
+          <SigninPage></SigninPage>
+    
     </div>
   );
 }
