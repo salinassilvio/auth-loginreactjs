@@ -1,8 +1,50 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 const SigninPage = () => {
-    let url='';
+    
+    //mi state usuario
+    const[user,setUser] = useState({
+        usuario:'',
+        clave:''
+    });
+
+     //extraer los valores del state
+    const {usuario,clave} = user;
+
+    //Leer los datos del formulario y colocarlos en el state
+    const obtenerInformacion = e =>{
+        setUser({
+            ...user,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    //Funcion de loguearse
+    const loguearse = e =>{
+        e.preventDefault();
+        if(usuario.trim() === '' || clave.trim() === ''){
+            //guardarError(true);
+            return;
+        }
+        const data = {
+            usuario: usuario,
+            clave:clave
+        };
+
+        console.log(data);
+        axios.post('http://localhost:5000/auth/login',data).then(
+            res => {
+                console.log(res);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        )
+    }
+    
     return (
         <div className="signIn-page">
             <br/>   
@@ -23,7 +65,7 @@ const SigninPage = () => {
                     con estos pasos sencillos
                     <br/>
                 </p>
-                <form>
+                <form onSubmit={loguearse}>
                     <div className="flex justify-center">
                         <div className="lg:w-1/3 md:w-2/3 w-full">
                             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
@@ -34,6 +76,7 @@ const SigninPage = () => {
                                 name="usuario"
                                 id="usuario"
                                 placeholder="Ingrese su usuario"
+                                onChange={obtenerInformacion}
                                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full
                                  py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"  
                                 required                                
@@ -53,6 +96,7 @@ const SigninPage = () => {
                                 name="clave"
                                 id="clave"
                                 placeholder="**********"
+                                onChange={obtenerInformacion}
                                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full
                                  py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"  
                                 required                                
