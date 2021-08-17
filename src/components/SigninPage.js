@@ -34,9 +34,9 @@ const SigninPage = () => {
         };
 
         console.log(data);
-        axios.post('http://localhost:5000/auth/login',data).then(
+        axios.post('auth/login',data).then(
             res => {
-                console.log(res);
+                localStorage.setItem('token',res.data.access_token)
             }
         ).catch(
             err => {
