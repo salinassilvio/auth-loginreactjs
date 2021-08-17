@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import {Link} from 'react-router-dom';
 
 const SigninPage = () => {
     let url='';
@@ -16,9 +17,9 @@ const SigninPage = () => {
                     text-gray-600"
                 >
                 O 
-                <a className="text-purple-400 mx-2" href={url} >  
+                <Link className="text-purple-400 mx-2" to={'/crear'} >  
                     Crea tu cuenta 
-                </a>
+                </Link>
                     con estos pasos sencillos
                     <br/>
                 </p>
@@ -68,7 +69,7 @@ const SigninPage = () => {
                             >
                             Login
                             </button>
-                        </div>
+                    </div>
                 </form>
             </div>
         </div>
