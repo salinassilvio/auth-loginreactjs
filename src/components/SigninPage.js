@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 const SigninPage = () => {
@@ -9,6 +9,9 @@ const SigninPage = () => {
         usuario:'',
         clave:''
     });
+
+    //state de login
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
      //extraer los valores del state
     const {usuario,clave} = user;
@@ -36,15 +39,21 @@ const SigninPage = () => {
         console.log(data);
         axios.post('auth/login',data).then(
             res => {
-                localStorage.setItem('token',res.data.access_token)
+                let token = res.data.access_token;
+                localStorage.setItem('token',token)
+                if(token) setIsLoggedIn(true);
             }
         ).catch(
             err => {
                 console.log(err);
             }
-        )
+        )     
+
     }
     
+    if (isLoggedIn) {
+        return <Redirect to='/Home' />
+    }
     return (
         <div className="signIn-page">
             <br/>   

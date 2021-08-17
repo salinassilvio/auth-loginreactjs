@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 const CreateUser = () => {
@@ -21,6 +21,9 @@ const CreateUser = () => {
         })
     }
 
+    //state de creado
+    const [isCreated, setIsCreated] = useState(false);
+
     //Funcion de Crear usuario
     const crearUsuario = e => {
         e.preventDefault();
@@ -37,6 +40,7 @@ const CreateUser = () => {
         axios.post('auth/registrar', data).then(
             res => {
                 console.log(res)
+                setIsCreated(true)   
             }
         ).catch(
             err => {
@@ -45,7 +49,8 @@ const CreateUser = () => {
         )
     }
 
-    return (
+    //Si es creado mandamos al login
+    return ( isCreated ?  <Redirect to='/' /> :
         <>
             <h2 className="text-center text-3xl leading-9 
                 font-extrabold text-gray-800"
