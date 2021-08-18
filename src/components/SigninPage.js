@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import {Link,Redirect} from 'react-router-dom';
 import axios from 'axios';
 import Spinner from './utils/Spinner';
+import Error from './utils/Error';
 
 const SigninPage = () => {
     
@@ -10,11 +11,16 @@ const SigninPage = () => {
         usuario:'',
         clave:''
     });
-
     //state de login
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     //state spinner
     const [cargando,guardarCargando] = useState(false);
+    //state error
+    const [error, guardarError] = useState({
+        iserror : false,
+        mensaje : ''
+    });
+
     //extraer los valores del state
     const {usuario,clave} = user;
 
@@ -33,7 +39,7 @@ const SigninPage = () => {
 
         e.preventDefault();
         if(usuario.trim() === '' || clave.trim() === ''){
-            //guardarError(true);
+            guardarError(true);
             return;
         }
         const data = {
@@ -41,8 +47,7 @@ const SigninPage = () => {
             clave:clave
         };
 
-        console.log(data);
-        const resultado = await axios.post('auth/login',data).then(
+        await axios.post('auth/login',data).then(
             res => {
                 let token = res.data.access_token;
                 console.log(token);
@@ -50,8 +55,7 @@ const SigninPage = () => {
                 //ocultar el spinner y mostrar 
                 setTimeout(() => {
                     //cambiar estado de cargando
-                    guardarCargando(false);
-           
+                    guardarCargando(false);           
                 }, 3000);
                 if(token)
                 {                    
@@ -62,6 +66,13 @@ const SigninPage = () => {
         ).catch(
             err => {
                 guardarCargando(false);
+                let mensaje = err.response.data.respuesta;
+                console.log(mensaje);
+                guardarError({
+                    ...error,
+                    iserror : true,
+                    mensaje : mensaje
+                })
                 console.log(err);
             }
         )     
@@ -143,7 +154,10 @@ const SigninPage = () => {
                             </button>
                     </div>
                 </form>
+                {/*  Spinner */}
                 {componente}
+                {/*  Component Error */}
+                {error.iserror ? <div className="mt-4 flex justify-center"><Error mensaje={error.mensaje}/></div> : null}
             </div>
         </div>
     )

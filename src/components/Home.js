@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React,{useState} from 'react'
+import { Redirect } from 'react-router-dom';
 import Navbar from './utils/Navbar'
 const Home = () => {
 
@@ -14,9 +15,12 @@ const Home = () => {
 
     axios.get('saludo',config).then(
         res => {
-            debugger;
             setSaludo(res.data.respuesta);
             console.log(saludo);
+        }
+    ).catch(
+        err => {
+            console.log(err);
         }
     )
 
