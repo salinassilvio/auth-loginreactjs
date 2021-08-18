@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import {Link,Redirect} from 'react-router-dom';
 import axios from 'axios';
+import Spinner from './utils/Spinner';
 
 const SigninPage = () => {
     
@@ -12,8 +13,9 @@ const SigninPage = () => {
 
     //state de login
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-     //extraer los valores del state
+    //state spinner
+    const [cargando,guardarCargando] = useState(false);
+    //extraer los valores del state
     const {usuario,clave} = user;
 
     //Leer los datos del formulario y colocarlos en el state
@@ -25,7 +27,10 @@ const SigninPage = () => {
     }
 
     //Funcion de loguearse
-    const loguearse = e =>{
+    const loguearse = async(e) =>{
+        //mostar el spinner
+        guardarCargando(true);
+
         e.preventDefault();
         if(usuario.trim() === '' || clave.trim() === ''){
             //guardarError(true);
@@ -37,20 +42,34 @@ const SigninPage = () => {
         };
 
         console.log(data);
-        axios.post('auth/login',data).then(
+        const resultado = await axios.post('auth/login',data).then(
             res => {
                 let token = res.data.access_token;
-                localStorage.setItem('token',token)
-                if(token) setIsLoggedIn(true);
+                console.log(token);
+                localStorage.setItem('token',token)                
+                //ocultar el spinner y mostrar 
+                setTimeout(() => {
+                    //cambiar estado de cargando
+                    guardarCargando(false);
+           
+                }, 3000);
+                if(token)
+                {                    
+                    guardarCargando(false);
+                    setIsLoggedIn(true);
+                }
             }
         ).catch(
             err => {
+                guardarCargando(false);
                 console.log(err);
             }
         )     
 
     }
-    
+    //Mostrar spinner o resultado 
+    const componente = (cargando) ? <Spinner/> : <></>;
+
     if (isLoggedIn) {
         return <Redirect to='/Home' />
     }
@@ -124,6 +143,7 @@ const SigninPage = () => {
                             </button>
                     </div>
                 </form>
+                {componente}
             </div>
         </div>
     )
